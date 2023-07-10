@@ -1,19 +1,23 @@
 import "../styles/Footer.css";
+import Order from "./Order";
 
 function Footer() {
   let currentHour = new Date().getHours();
-  const isOpen = currentHour >= 8 && currentHour <= 20;
+  // let currentHour = 7;
+  const openHour = 8;
+  const closeHour = 20;
+  const isOpen = currentHour >= openHour && currentHour <= closeHour;
 
   return (
     <footer className="footer">
-      <div className="order">
+      {isOpen ? (
+        <Order openHour={openHour} closeHour={closeHour} />
+      ) : (
         <h2>
-          {isOpen
-            ? "We are open until 20:00. You can visit us or order online."
-            : "Sorry, we are closed :("}
+          Sorry, we are currently closed. We will be working again tomorrow from
+          8 until 20 o'clock.
         </h2>
-        <button className="btn">Order</button>
-      </div>
+      )}
     </footer>
   );
 }
