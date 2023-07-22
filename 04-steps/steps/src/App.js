@@ -6,15 +6,52 @@ const messages = [
   "Invest your new income 🤑",
 ];
 
-function App() {
+export default function App() {
+  return (
+    <div>
+      <Steps />
+      <StepMessage step={1}>
+        <div className="buttons">
+          <Button
+            bgColor={"purple"}
+            textColor={"white"}
+            onClick={() => alert("React")}
+          >
+            Learn to code
+          </Button>
+        </div>
+      </StepMessage>
+    </div>
+  );
+}
+
+function Steps() {
   const [step, setStep] = useState(1);
   const [isOpen, setIsOpen] = useState(true);
 
+  // const [test, setTest] = useState({ name: "Jonas" });
+
+  function handlePrevious() {
+    if (step > 1) setStep((s) => s - 1);
+  }
+
+  function handleNext() {
+    if (step < 3) {
+      setStep((s) => s + 1);
+      // setStep((s) => s + 1);
+    }
+
+    // BAD PRACTICE
+    // test.name = "Fred";
+    // setTest({ name: "Fred" });
+  }
+
   return (
-    <>
+    <div>
       <button className="close" onClick={() => setIsOpen((is) => !is)}>
         &times;
       </button>
+
       {isOpen && (
         <div className="steps">
           <div className="numbers">
@@ -22,29 +59,43 @@ function App() {
             <div className={step >= 2 ? "active" : ""}>2</div>
             <div className={step >= 3 ? "active" : ""}>3</div>
           </div>
-          <div className="message">
-            Step {step}: {messages[step - 1]}
-          </div>
+
+          <StepMessage step={step}>{messages[step - 1]}</StepMessage>
+
           <div className="buttons">
-            <button
-              onClick={() => setStep((s) => s - 1)}
-              style={{ backgroundColor: "#7950f2", color: "#fff" }}
-              disabled={step === 1 ? true : false}
+            <Button
+              onClick={handlePrevious}
+              bgColor={"#7950f2"}
+              textColor={"#fff"}
             >
-              Previous
-            </button>
-            <button
-              onClick={() => setStep((s) => s + 1)}
-              style={{ backgroundColor: "#7950f2", color: "#fff" }}
-              disabled={step === 3 ? true : false}
-            >
-              Next
-            </button>
+              <span>👈 Previous</span>
+            </Button>
+            <Button onClick={handleNext} bgColor={"#7950f2"} textColor={"#fff"}>
+              <span>Next 👉</span>
+            </Button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
-export default App;
+function StepMessage({ step, children }) {
+  return (
+    <div className="message">
+      <h3>Step {step}</h3>
+      {children}
+    </div>
+  );
+}
+
+function Button({ bgColor, onClick, textColor, children }) {
+  return (
+    <button
+      style={{ backgroundColor: bgColor, color: textColor }}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
