@@ -1,10 +1,10 @@
 import React from "react";
 // import { useState } from "react";
 import ReactDOM from "react-dom/client";
-// import "./index.css";
-// import App from "./App";
+import "./index.css";
+import App from "./App";
 // import StarRarting from "./StarRarting";
-import ExpandText from "./TextExpander";
+// import ExpandText from "./TextExpander";
 
 // function ExternalPropSetting() {
 //   const [movieRating, setMovieRating] = useState(0);
@@ -19,7 +19,7 @@ import ExpandText from "./TextExpander";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    {/* <App /> */}
+    <App />
     {/* <StarRarting maxRating={10} />
     <StarRarting
       maxRating={5}
@@ -29,6 +29,6 @@ root.render(
       defaultRating={3}
     />
     <ExternalPropSetting /> */}
-    <ExpandText />
+    {/* <ExpandText /> */}
   </React.StrictMode>
 );

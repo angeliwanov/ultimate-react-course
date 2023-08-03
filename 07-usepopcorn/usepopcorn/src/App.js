@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const tempMovieData = [
   {
@@ -50,19 +50,56 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
+const KEY = "fcf4402a";
+
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
+
+  function handleAddMovie(movie) {
+    if (!watched.includes(movie)) {
+      setWatched((movies) => [...movies, movie]);
+    }
+  }
+
+  useEffect(() => {
+    async function fetchMovies() {
+      try {
+        setIsLoading(true);
+        setError("");
+        const res = await fetch(
+          `http://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&s=${query}`
+        );
+        if (!res.ok) throw new Error("Something went wrong...");
+        const data = await res.json();
+        if (data.Response === "False") throw new Error("Movie not found");
+        setMovies(data.Search);
+      } catch (err) {
+        console.log(err.message);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchMovies();
+  }, [query]);
 
   return (
     <>
       <NavBar>
-        <Search />
+        <Search query={query} setQuery={setQuery} />
         <NumResults movies={movies} />
       </NavBar>
       <Main>
         <Box>
-          <MovieList movies={movies} />
+          {isLoading && <Loader />}
+          {!isLoading && !error && (
+            <MovieList movies={movies} onAddMovie={handleAddMovie} />
+          )}
+          {error && <ErrorMessage message={error} />}
         </Box>
         <Box>
           {" "}
@@ -74,6 +111,9 @@ export default function App() {
   );
 }
 
+function Loader() {
+  return <p className="loader">Loading...</p>;
+}
 function NavBar({ children }) {
   return (
     <nav className="nav-bar">
@@ -81,6 +121,10 @@ function NavBar({ children }) {
       {children}
     </nav>
   );
+}
+
+function ErrorMessage({ message }) {
+  return <p className="error">⛔️ {message}</p>;
 }
 
 function Logo() {
@@ -92,9 +136,7 @@ function Logo() {
   );
 }
 
-function Search() {
-  const [query, setQuery] = useState("");
-
+function Search({ query, setQuery }) {
   return (
     <input
       className="search"
@@ -109,7 +151,7 @@ function Search() {
 function NumResults({ movies }) {
   return (
     <p className="num-results">
-      Found <strong>{movies.length}</strong> results
+      Found <strong>{movies ? movies.length : 0}</strong> results
     </p>
   );
 }
@@ -131,19 +173,19 @@ function Box({ children }) {
   );
 }
 
-function MovieList({ movies }) {
+function MovieList({ movies, onAddMovie }) {
   return (
     <ul className="list">
       {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.imdbID} />
+        <Movie movie={movie} key={movie.imdbID} onAddMovie={onAddMovie} />
       ))}
     </ul>
   );
 }
 
-function Movie({ movie }) {
+function Movie({ movie, onAddMovie }) {
   return (
-    <li>
+    <li onClick={() => onAddMovie(movie)}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
       <div>
