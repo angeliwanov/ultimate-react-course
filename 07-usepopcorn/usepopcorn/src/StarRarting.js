@@ -24,7 +24,7 @@ StarRarting.propTypes = {
 export default function StarRarting({
   maxRating = 10,
   color = "#fcc419",
-  size = 48,
+  size = 24,
   className = "",
   messages = [],
   defaultRating = 0,
@@ -42,7 +42,7 @@ export default function StarRarting({
 
   function handleRating(rating) {
     setRating(rating);
-    onSetRating(rating);
+    onSetRating && onSetRating(rating);
   }
 
   return (
