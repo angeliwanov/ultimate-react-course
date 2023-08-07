@@ -2,7 +2,7 @@ import React from "react";
 // import { useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
+import App2 from "./App";
 // import CurrencyConverter from "./CurrencyConverter";
 // import StarRarting from "./StarRarting";
 // import ExpandText from "./TextExpander";
@@ -21,7 +21,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     {/* <CurrencyConverter /> */}
-    <App />
+    <App2 />
     {/* <StarRarting maxRating={10} />
     <StarRarting
       maxRating={5}
