@@ -15,6 +15,7 @@ INSTRUCTIONS / CONSIDERATIONS:
 
 7. Customer can only close an account if there is no loan, AND if the balance is zero. If this condition is not met, just return the state. If the condition is met, the account is deactivated and all money is withdrawn. The account basically gets back to the initial state
 */
+import { useReducer } from "react";
 
 const initialState = {
   balance: 0,
@@ -22,43 +23,109 @@ const initialState = {
   isActive: false,
 };
 
+function reducer(state, action) {
+  if (!state.isActive && action.type !== "open") return state;
+
+  switch (action.type) {
+    case "open":
+      return {
+        ...state,
+        isActive: true,
+        balance: action.payload,
+      };
+    case "deposit":
+      return {
+        ...state,
+        balance: state.balance + action.payload,
+      };
+    case "withdraw":
+      if (state.balance === 0) return state;
+      return {
+        ...state,
+        balance: state.balance - action.payload,
+      };
+    case "request-loan":
+      if (state.loan > 0) return state;
+      return {
+        ...state,
+        balance: state.balance + action.payload,
+        loan: action.payload,
+      };
+    case "pay-loan":
+      if (state.loan === 0) return state;
+      return {
+        ...state,
+        balance: state.balance - action.payload,
+        loan: state.loan - action.payload,
+      };
+    case "close":
+      if (state.balance > 0 || state.loan > 0) return state;
+      return initialState;
+    default:
+      throw new Error("Unknow type");
+  }
+}
+
 export default function App() {
+  const [{ balance, loan, isActive }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
+
   return (
     <div
       className="App"
       style={{ fontFamily: "sans-serif", textAlign: "center" }}
     >
       <h1>useReducer Bank Account</h1>
-      <p>Balance: X</p>
-      <p>Loan: X</p>
+      <p>Balance: {balance}</p>
+      <p>Loan: {loan}</p>
 
       <p>
-        <button onClick={() => {}} disabled={false}>
+        <button
+          onClick={() => dispatch({ type: "open", payload: 500 })}
+          disabled={isActive}
+        >
           Open account
         </button>
       </p>
       <p>
-        <button onClick={() => {}} disabled={false}>
+        <button
+          onClick={() => dispatch({ type: "deposit", payload: 150 })}
+          disabled={!isActive}
+        >
           Deposit 150
         </button>
       </p>
       <p>
-        <button onClick={() => {}} disabled={false}>
+        <button
+          onClick={() => dispatch({ type: "withdraw", payload: 50 })}
+          disabled={!isActive}
+        >
           Withdraw 50
         </button>
       </p>
       <p>
-        <button onClick={() => {}} disabled={false}>
+        <button
+          onClick={() => dispatch({ type: "request-loan", payload: 5000 })}
+          disabled={!isActive}
+        >
           Request a loan of 5000
         </button>
       </p>
       <p>
-        <button onClick={() => {}} disabled={false}>
+        <button
+          onClick={() => dispatch({ type: "pay-loan", payload: 5000 })}
+          disabled={!isActive}
+        >
           Pay loan
         </button>
       </p>
       <p>
-        <button onClick={() => {}} disabled={false}>
+        <button
+          onClick={() => dispatch({ type: "close" })}
+          disabled={!isActive}
+        >
           Close account
         </button>
       </p>
