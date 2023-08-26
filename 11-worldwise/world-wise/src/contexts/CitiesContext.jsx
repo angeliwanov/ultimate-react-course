@@ -33,7 +33,7 @@ function CitiesProvidor({ children }) {
       const data = await res.json();
       setCurrentCity(data);
     } catch {
-      alert("There was an error fetching data");
+      alert("There was an error loading cities");
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +50,21 @@ function CitiesProvidor({ children }) {
       const data = await res.json();
       setCities((cities) => [...cities, data]);
     } catch {
-      alert("There was an error posting data");
+      alert("There was an error creating city");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function deleteCity(id) {
+    try {
+      setIsLoading(true);
+      await fetch(`${BASE_URL}/cities/${id}`, {
+        method: "DELETE",
+      });
+      setCities((cities) => cities.filter((city) => city.id !== id));
+    } catch {
+      alert("There was an error deleting city");
     } finally {
       setIsLoading(false);
     }
@@ -58,7 +72,14 @@ function CitiesProvidor({ children }) {
 
   return (
     <CitiesContext.Provider
-      value={{ cities, isLoading, getCity, currentCity, createCity }}
+      value={{
+        cities,
+        isLoading,
+        getCity,
+        currentCity,
+        createCity,
+        deleteCity,
+      }}
     >
       {children}
     </CitiesContext.Provider>
