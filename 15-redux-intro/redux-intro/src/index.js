@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import "./Store.js";
+import store from "./Store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -10,3 +10,6 @@ root.render(
     <App />
   </React.StrictMode>
 );
+
+store.dispatch({ type: "account/deposit", payload: 500 });
+console.log(store.getState());
