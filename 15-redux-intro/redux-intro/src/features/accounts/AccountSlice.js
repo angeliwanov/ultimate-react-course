@@ -12,6 +12,7 @@ export default function accountReducer(state = initialStateAccount, action) {
         balance: state.balance + action.payload,
       };
     case "account/withdraw":
+      if (action.payload > state.balance) return;
       return {
         ...state,
         balance: state.balance - action.payload,
@@ -37,17 +38,17 @@ export default function accountReducer(state = initialStateAccount, action) {
 }
 
 export function deposit(amount) {
-  return { type: "account/deposit", payload: 500 };
+  return { type: "account/deposit", payload: amount };
 }
 
 export function withdraw(amount) {
-  return { type: "account/withdraw", payload: 200 };
+  return { type: "account/withdraw", payload: amount };
 }
 
 export function requestLoan(amount, purpose) {
   return {
     type: "account/requestLoan",
-    payload: { amount: 1000, purpose: "Buy a car" },
+    payload: { amount: amount, purpose: purpose },
   };
 }
 
