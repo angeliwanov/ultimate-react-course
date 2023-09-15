@@ -1,11 +1,18 @@
 import { useState } from "react";
 import Button from "../../ui/Button";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { updateName } from "./UserSlice";
 
 function CreateUser() {
   const [username, setUsername] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
+    dispatch(updateName(username));
+    navigate("/menu");
   }
 
   return (
