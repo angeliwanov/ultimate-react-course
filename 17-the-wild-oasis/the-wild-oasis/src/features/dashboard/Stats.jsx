@@ -9,7 +9,7 @@ import {
 
 function Stats({ bookings, confirmedStays, cabinsCount, numDays }) {
   const numBookings = bookings.length;
-  const sales = confirmedStays.reduce((acc, cur) => acc + cur.totalPrice, 0);
+  const sales = bookings.reduce((acc, cur) => acc + cur.totalPrice, 0);
   const checkins = confirmedStays.length;
   const occupancyRate = Math.round(
     (confirmedStays.reduce((acc, cur) => acc + cur.numNights, 0) /
